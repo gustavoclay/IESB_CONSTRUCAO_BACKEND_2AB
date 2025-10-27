@@ -5,6 +5,7 @@ const PessoaModel = require('../models/PessoaModel')
 
 // importo os validadores
 const { validarNovaPessoa } = require('../validators/PessoaValidator')
+const { validarID } = require('../validators/IDValidator')
 
 // Rotas
 // Cadastro
@@ -20,7 +21,7 @@ router.get('/pessoas', async (req, res, next) => {
   res.json(pessoas)
 })
 
-router.get('/pessoas/:id', async (req, res, next) => {
+router.get('/pessoas/:id', validarID, async (req, res, next) => {
   const pessoaEcontrada = await PessoaModel.findById(req.params.id)
   if (!pessoaEcontrada) {
     return res.status(404).json({ erro: "Pessoa não econtrada!" })
@@ -29,7 +30,7 @@ router.get('/pessoas/:id', async (req, res, next) => {
 })
 
 // Atualização
-router.put('/pessoas/:id', async (req, res, next) => {
+router.put('/pessoas/:id', validarID, async (req, res, next) => {
   const id = req.params.id
   const novosDados = req.body
   const pessoaAtualizada = await PessoaModel.findByIdAndUpdate(id, novosDados, { new: true })
@@ -40,7 +41,7 @@ router.put('/pessoas/:id', async (req, res, next) => {
 })
 
 // Exclusão
-router.delete('/pessoas/:id', async (req, res, next) => {
+router.delete('/pessoas/:id', validarID, async (req, res, next) => {
   const id = req.params.id
   await PessoaModel.findByIdAndDelete(id)
   res.status(204).send()
